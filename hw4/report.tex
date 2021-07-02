@@ -1,0 +1,116 @@
+\documentclass{article}
+\usepackage{graphicx}
+
+\begin{document}
+
+\title{Gebze Technical University\\CSE344 Systems Programming Course\\ -\\HOMEWORK 4 REPORT}
+\author{Muhammed OZKAN 151044084}
+
+\maketitle
+
+\begin{abstract}
+You will simulate a system where one student hires other students to do her homework in her place. 
+Every actor in this system will be represented by a separate thread. Thread h, reads her homeworks 
+one by one from an input file, and puts them in a queue, along with her priority (speed S, cost C or 
+quality Q). There will also be an arbitrary number of students-for-hire, each of course represented as 
+a separate thread. Each of them will possess 3 parameters: a price per homework, speed per 
+homework and quality per homework. The main thread, depending on the requested priority, will 
+give the task to the student-for-hire thread that is most suitable and available (i.e. not busy with 
+another homework). 
+\end{abstract}
+
+\section{Overview}
+\quad The homework I submitted is a complete assignment. It supports all the requirements and parameters requested in the homework document. In fact, there are basically 2 separate producer-consumer problems in the homework. In one of them, a single producer is a single consumer, and the other is a producer with more than one consumer. Main thread recives the given parameters and open the files with the given paths. It saves the names and properties specified in the Student file to the relevant structures in the global memory area. Creates semaphores to be used for synchronization in program flow. It creates all the necessary threads. There are basically 3 different thread function in our program. These are the thread that reads the homeworks char by char from the file, a tread that distributes the assignments to the relevant students, and finally a thread that identifies the students who solve the assignments. \\
+\newpage
+\section{How did I solve this problem.}
+\quad First of all, the program checks the parameters given and the contents of the given files for errors. It stores the data in the student file globally in an array. It gives the necessary information messages to the screen. It defines all variables and semaphores that should be used in the program. The main thread finally creates all the other threads, and it puts itself in a loop to do the task of distributing homework. When all the processes are finished, it exits this loop and prints the results on the screen and terminates the program completely. Resources are given back to the system.
+\par Secondly, our system, which reads the homeworks from the file, reads them one by one from the homework file and adds them to the previously created queue. This structure is provided with full empty semaphores. Adds as many elements as the number of elements in the queue. When the queue is full, it puts itself on wait(EMPTYSEM) until there is a place in the queue. When the homework to be read in the file is finished or the money runs out or the main process has no money to do the homework, Main thread sends a message and the thread is terminated.
+\par Finally, the threads that do homework are waiting for an homework behind a special own semaphore from the main thread. When it finds a suitable assignment for that student, the main thread delivers it to the relevant student with the help of a variable and semaphore and waits for the student to receive the work. The student who takes the assignment prints the message I have received the job, I am doing it, and informs the main thread. \\
+
+
+\section{My design decisions.}
+ \quad I saw the problem as two separate producer consumer problems and developed the solution accordingly. The structure that makes the homework and distributes it is a producer, consumer. I designed the students who did their homework as a separate producer consumer. The main thread consumes on the one hand and produces what it gets on the other hand. Students are kept in a structure we design. I used the POSIX qsort () function to sort them by their properties and costs. I used the full empty producer consumer solution in the queue structure. Communicating with threads, I used a common variable for both semaphore and data sent. Received information for the messages sent is also sent with the different semaphore. Semaphore is used as much as the number of students. To inform them to do homework. If any thread finishes before the others, it informs the others through the message system and terminates itself. others terminate themselves according to this message when they finish their job or jobs in the queue.\\
+\newpage
+\section{What requirements did I meet and which did I fail?}
+\quad All requirements are fully met. All threads created at the end of the program are terminated and resources are returned to the system.\\
+
+
+\section{Tests}
+
+\quad pithblood@Monster:\$ ./program homeworkFilePath studentsFilePath 10000\\
+5 students-for-hire threads have been created.\\
+        Name             Q       S       C\\
+odtulu                   5       3       900\\
+bogazicili               4       5       1000\\
+itulu                    4       4       800\\
+ytulu                    3       4       650\\
+sakaryali                1       2       150\\
+odtulu is waiting for a homework\\
+bogazicili is waiting for a homework\\
+itulu is waiting for a homework\\
+ytulu is waiting for a homework\\
+sakaryali is waiting for a homework\\
+H has a new homework C; remaining money is 10000TL\\
+H has a new homework S; remaining money is 10000TL\\
+H has a new homework Q; remaining money is 10000TL\\
+H has a new homework C; remaining money is 10000TL\\
+H has a new homework S; remaining money is 10000TL\\
+H has a new homework Q; remaining money is 10000TL\\
+H has a new homework C; remaining money is 10000TL\\
+H has a new homework S; remaining money is 10000TL\\
+H has a new homework Q; remaining money is 10000TL\\
+H has a new homework C; remaining money is 10000TL\\
+H has a new homework S; remaining money is 10000TL\\
+H has a new homework C; remaining money is 10000TL\\
+H has a new homework Q; remaining money is 10000TL\\
+H has a new homework S; remaining money is 10000TL\\
+H has a new homework C; remaining money is 10000TL\\
+sakaryali is solving homework C for 150, H has 9850TL left.\\
+bogazicili is solving homework S for 1000, H has 8850TL left.\\
+H has a new homework S; remaining money is 8850TL\\
+H has a new homework S; remaining money is 8850TL\\
+odtulu is solving homework Q for 900, H has 7950TL left.\\
+ytulu is solving homework C for 650, H has 7300TL left.\\
+H has a new homework C; remaining money is 7300TL\\
+H has a new homework Q; remaining money is 7300TL\\
+itulu is solving homework S for 800, H has 6500TL left.\\
+H has a new homework S; remaining money is 6500TL\\
+bogazicili is waiting for a homework\\
+bogazicili is solving homework Q for 1000, H has 5500TL left.\\
+H has a new homework C; remaining money is 5500TL\\
+bogazicili is waiting for a homework\\
+ytulu is waiting for a homework\\
+ytulu is solving homework C for 650, H has 4850TL left.\\
+H has a new homework Q; remaining money is 3850TL\\
+bogazicili is solving homework S for 1000, H has 3850TL left.\\
+H has a new homework C; remaining money is 3850TL\\
+itulu is waiting for a homework\\
+itulu is solving homework Q for 800, H has 3050TL left.\\
+H has a new homework Q; remaining money is 3050TL\\
+odtulu is waiting for a homework\\
+odtulu is solving homework C for 900, H has 2150TL left.\\
+H has a new homework Q; remaining money is 2150TL\\
+bogazicili is waiting for a homework\\
+bogazicili is solving homework S for 1000, H has 1150TL left.\\
+H has a new homework Q; remaining money is 1150TL\\
+sakaryali is waiting for a homework\\
+ytulu is waiting for a homework\\
+sakaryali is solving homework C for 150, H has 1000TL left.\\
+H has a new homework S; remaining money is 350TL\\
+bogazicili is waiting for a homework\\
+ytulu is solving homework Q for 650, H has 350TL left.\\
+H has no more money for homework on current student, terminating.\\
+itulu is waiting for a homework\\
+odtulu is waiting for a homework\\
+ytulu is waiting for a homework\\
+sakaryali is waiting for a homework\\
+Money is over, closing.\\
+Homeworks solved and money made by the students:\\
+odtulu                   2       1800\\
+bogazicili               4       4000\\
+itulu                    2       1600\\
+ytulu                    3       1950\\
+sakaryali                2       300\\
+Total cost for 13 homeworks 9650TL\\
+Money left at H’s account: 350TL\\
+\end{document}

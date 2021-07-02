@@ -1,0 +1,5 @@
+1 SELECT * FROM TABLE;
+2 SELECT Year , Units , Variable_name FROM TABLE;
+3 UPDATE TABLE SET Value = '456456'   ,   Variable_code = 'asdasdasd' WHERE    Year = '2013' ;
+1 SELECT Value, Variable_code FROM TABLE;
+4 SELECT DISTINCT Industry_code_ANZSIC06  ,  Value FROM TABLE; 
